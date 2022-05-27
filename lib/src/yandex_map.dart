@@ -47,6 +47,30 @@ class _YandexMapState extends State<YandexMap> {
   @override
   Widget build(BuildContext context) {
     if (defaultTargetPlatform == TargetPlatform.android) {
+      return PlatformViewLink(
+          viewType: YandexMap.viewType,
+          surfaceFactory: (BuildContext context, PlatformViewController controller) {
+            return AndroidViewSurface(
+              controller: controller as AndroidViewController,
+              gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+                Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer())
+              ].toSet(),
+              hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+            );
+          },
+          onCreatePlatformView: (PlatformViewCreationParams params) {
+            return PlatformViewsService.initExpensiveAndroidView(
+              id: params.id,
+              viewType: YandexMap.viewType,
+              layoutDirection: TextDirection.ltr,
+              creationParamsCodec: const StandardMessageCodec(),
+              onFocus: () => params.onFocusChanged(true),
+            )
+              ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
+              ..addOnPlatformViewCreatedListener(_onPlatformViewCreated)
+              ..create();
+          }
+      );
       return AndroidView(
         viewType: YandexMap.viewType,
         onPlatformViewCreated: _onPlatformViewCreated,
@@ -98,5 +122,3 @@ class _YandexMapState extends State<YandexMap> {
     }
   }
 }
-
-
