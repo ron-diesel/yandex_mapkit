@@ -53,6 +53,7 @@ class _YandexMapState extends State<YandexMap> {
         gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
           Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer())
         ].toSet(),
+        creationParamsCodec: const StandardMessageCodec(),
       );
     } else {
       return UiKitView(
@@ -97,3 +98,5 @@ class _YandexMapState extends State<YandexMap> {
     }
   }
 }
+
+
